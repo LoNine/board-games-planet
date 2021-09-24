@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+}
+
+.link {
+  font-size: 20px;
+  color: black;
+  margin-right: 25px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
