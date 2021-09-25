@@ -8,16 +8,6 @@ import { getMostLikesGames } from "./app/games";
 import Home from "./components/Home";
 
 function App() {
-  const dispatch = useAppDispatch();
-  const loadData = async () => {
-    batch(() => {
-      dispatch(getMostLikesGames());
-    });
-  };
-  useEffect(() => {
-   loadData()
-  }, [])
-
   return (
     <BrowserRouter>
       <Route path="/">

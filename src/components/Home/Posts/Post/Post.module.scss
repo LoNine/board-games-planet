@@ -1,0 +1,25 @@
+.container {
+display: flex;
+flex-direction: column;
+padding: 20px 10px;
+border-bottom: 1px solid black;
+cursor: pointer;
+}
+
+.title {
+font-size: 26px;
+text-align: center;
+font-weight: bold;
+}
+
+.image {
+  width: 300px;
+}
+
+.description {
+font-size: 18px;
+}
+
+.head {
+  display: flex;
+}

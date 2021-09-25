@@ -1,4 +1,5 @@
 import { resourceLimits } from "worker_threads";
+import IForumPost from "../models/IForumPost";
 import IGame from "../models/IGame";
 
 const apiURL = process.env.REACT_APP_IP_BORAD_GAMES_API;
@@ -7,7 +8,7 @@ const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
 
 class BoardGamesApi {
   async getMostLikesGames() {
-    const response = await fetch(`${apiURL}search?client_id=${clientId}`);
+    const response = await fetch(`${apiURL}search?client_id=${clientId}&limit=12`);
 
     const result: { games: IGame[]; count: number } = await response.json();
 
@@ -23,6 +24,15 @@ class BoardGamesApi {
 
     return result.games;
   }
+
+  async getForumPostsForHome() {  
+    const response = await fetch(`${apiURL}forum?client_id=${clientId}&limit=6`);
+
+    const result: {posts: IForumPost[], badges:[]} = await response.json();
+
+    return result.posts;
+    
+  };
 }
 
 export default BoardGamesApi;

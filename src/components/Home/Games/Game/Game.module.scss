@@ -1,0 +1,23 @@
+.container {
+  border: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.image {
+  width: 250px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.price {
+  font-size: 20px;
+  font-style: italic;
+}
