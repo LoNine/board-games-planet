@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid black;
+}
+
+.textsContainder {
+  width: 70%;
+}
+
+.image {
+  width: 120px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.timeContainer, .playersContainer {
+  display: flex;
+}
+
+.time, .players{
+  font-size: 18px;
+  font-style: italic;
+}
+

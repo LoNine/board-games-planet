@@ -1,11 +1,8 @@
 import "./App.scss";
-import {useEffect} from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 import Header from "./components/Header";
-import { useAppDispatch } from "./app/hooks";
-import { batch } from "react-redux";
-import { getMostLikesGames } from "./app/games";
 import Home from "./components/Home";
+import Games from "./components/Games";
 
 function App() {
   return (
@@ -17,7 +14,7 @@ function App() {
         <Home />
       </Route>
       <Route exact path="/games">
-        <div>games list</div>
+        <Games />
       </Route>
       <Route path="/games/:game">
         <div>game page</div>

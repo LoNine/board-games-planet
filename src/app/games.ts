@@ -4,6 +4,7 @@ import BoardGamesApi from "../services/BoardGamesApi";
 
 interface IGamesInitialState {
   mostDiscussed: IGame[] | null;
+  filtered: IGame[] | null;
   searchByName: IGame[] | null | undefined;
 }
 
@@ -18,13 +19,24 @@ export const getMostLikesGames = createAsyncThunk(
   }
 );
 
+export const getFilteredGames = createAsyncThunk(
+  "games/getFiltered",
+  async (query: string) => {
+    const api = new BoardGamesApi();
+
+    const result = await api.getFilteredGames(query);
+
+    return result;
+  }
+);
+
 export const getGamesByName = createAsyncThunk(
   "games/getByName",
   async (name: string) => {
     const api = new BoardGamesApi();
 
     const result = await api.getGamesByName(name);
-    
+
     return result.length > 0 ? result : undefined;
   }
 );
@@ -32,6 +44,7 @@ export const getGamesByName = createAsyncThunk(
 const initialState: IGamesInitialState = {
   mostDiscussed: null,
   searchByName: null,
+  filtered: null,
 };
 
 const gamesReducer = createReducer(initialState, (builder) => {
@@ -49,6 +62,14 @@ const gamesReducer = createReducer(initialState, (builder) => {
 
   builder.addCase(getGamesByName.rejected, (state) => {
     state.searchByName = undefined;
+  });
+
+  builder.addCase(getFilteredGames.pending, (state) => {
+    state.filtered = null;
+  });
+
+  builder.addCase(getFilteredGames.fulfilled, (state, action) => {
+    state.filtered = action.payload;
   });
 });
 
