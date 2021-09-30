@@ -3,6 +3,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Games from "./components/Games";
+import GamePage from "./components/GamePage";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         <Games />
       </Route>
       <Route path="/games/:game">
-        <div>game page</div>
+        <GamePage />
       </Route>
     </BrowserRouter>
   );
