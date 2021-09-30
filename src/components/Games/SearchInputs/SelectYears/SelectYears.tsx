@@ -1,52 +1,51 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
-import { useState } from "react";
-import { FC } from "react-router/node_modules/@types/react";
+import { TextField } from "@mui/material";
+import { useState, useRef } from "react";
+import { ChangeEvent, FC } from "react-router/node_modules/@types/react";
 import { IQueryObj } from "../SearchInputs";
+import { debounce } from "lodash";
 
 interface ISelectYearsProps {
-  onChange: (query:IQueryObj) => void;
+  onChange: (query: IQueryObj) => void;
 }
 
-const SelectYears: FC<ISelectYearsProps> = ({  onChange }) => {
-  const [yearValue, setYearValue] = useState('')
+const SelectYears: FC<ISelectYearsProps> = ({ onChange }) => {
+  const [yearFromValue, setYearFromValue] = useState("");
+  const [yearToValue, setYearToValue] = useState("");
+  const onYearDebounced = useRef(debounce(onChange, 300));
 
-  const date = new Date();
-  const menuItems = [];
-  menuItems.push(<MenuItem value='any'>Any</MenuItem>)
-  for (let i = date.getFullYear(); i >= 1980; i--) {
-    menuItems.push(
-      <MenuItem key={i} value={i}>
-        {i}
-      </MenuItem>
-    );
-  }
+  const handleOnFromChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setYearFromValue(event.target.value);
 
-  const handleOnChange = (event:SelectChangeEvent) => {
-    setYearValue(event.target.value);
+    onYearDebounced.current({
+      key: "gt_year_published",
+      value: (+event.target.value - 1).toString(),
+    });
+  };
 
-    onChange({key:'year_published', value: event.target.value})
-  }
-  
+  const handleOnToChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setYearToValue(event.target.value);
+
+    onYearDebounced.current({
+      key: "lt_year_published",
+      value: (+event.target.value + 1).toString(),
+    });
+  };
 
   return (
-    <FormControl >
-      <InputLabel id="year-label">Year</InputLabel>
-      <Select
-        labelId="year-select-label"
-        id="year-select"
-        value={yearValue}
-        label="Year"
-        onChange={handleOnChange}
-      >
-        {menuItems.map((item) => item)}
-      </Select>
-    </FormControl>
+    <div>
+      <TextField
+        type="number"
+        label="Year From"
+        onChange={handleOnFromChange}
+        value={yearFromValue}
+      />
+      <TextField
+        type="number"
+        label="Year To"
+        onChange={handleOnToChange}
+        value={yearToValue}
+      />
+    </div>
   );
 };
 

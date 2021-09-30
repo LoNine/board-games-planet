@@ -1,4 +1,3 @@
-import { resourceLimits } from "worker_threads";
 import IForumPost from "../models/IForumPost";
 import IGame from "../models/IGame";
 
@@ -17,14 +16,14 @@ class BoardGamesApi {
     return result.games;
   }
 
-  async getFilteredGames(query: string) {
+  async getFilteredGames(query: string, skip:string) {
     const responce = await fetch(
-      `${apiURL}search${query}&client_id=${clientId}`
+      `${apiURL}search${query}&client_id=${clientId}&limit=20&skip=${skip}`
     );
 
     const result: { games: IGame[]; count: number } = await responce.json();
 
-    return result.games;
+    return result;
   }
 
   async getGamesByName(name: string) {
@@ -45,6 +44,16 @@ class BoardGamesApi {
     const result: { posts: IForumPost[]; badges: [] } = await response.json();
 
     return result.posts;
+  }
+
+  async getGameById(id: string) {
+    const responce = await fetch(
+      `${apiURL}search?client_id=${clientId}&ids=${id}`
+    );
+
+    const result: { games: IGame[]; count: number } = await responce.json();
+
+    return result.games;
   }
 }
 

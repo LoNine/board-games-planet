@@ -4,8 +4,14 @@ import BoardGamesApi from "../services/BoardGamesApi";
 
 interface IGamesInitialState {
   mostDiscussed: IGame[] | null;
-  filtered: IGame[] | null;
+  filtered: { games: IGame[]; count: number } | null;
   searchByName: IGame[] | null | undefined;
+  byId: IGame[] | null | undefined;
+}
+
+interface IQuery {
+  main: string;
+  skip: string;
 }
 
 export const getMostLikesGames = createAsyncThunk(
@@ -21,10 +27,10 @@ export const getMostLikesGames = createAsyncThunk(
 
 export const getFilteredGames = createAsyncThunk(
   "games/getFiltered",
-  async (query: string) => {
+  async (query: IQuery) => {
     const api = new BoardGamesApi();
 
-    const result = await api.getFilteredGames(query);
+    const result = await api.getFilteredGames(query.main, query.skip);
 
     return result;
   }
@@ -41,10 +47,22 @@ export const getGamesByName = createAsyncThunk(
   }
 );
 
+export const getGameById = createAsyncThunk(
+  "games/getById",
+  async (id: string) => {
+    const api = new BoardGamesApi();
+
+    const result = await api.getGameById(id);
+
+    return result.length > 0 ? result : undefined;
+  }
+);
+
 const initialState: IGamesInitialState = {
   mostDiscussed: null,
   searchByName: null,
   filtered: null,
+  byId: null,
 };
 
 const gamesReducer = createReducer(initialState, (builder) => {
@@ -70,6 +88,18 @@ const gamesReducer = createReducer(initialState, (builder) => {
 
   builder.addCase(getFilteredGames.fulfilled, (state, action) => {
     state.filtered = action.payload;
+  });
+
+  builder.addCase(getGameById.pending, (state) => {
+    state.byId = null;
+  });
+
+  builder.addCase(getGameById.fulfilled, (state, action) => {
+    state.byId = action.payload;
+  });
+
+  builder.addCase(getGameById.rejected, (state) => {
+    state.byId = undefined;
   });
 });
 

@@ -24,9 +24,10 @@ const Games: FC = () => {
   const location = useLocation();
   const history = useHistory();
   const [gamesFiltered, setGamesFiltered] = useState<IGamesFiltered[]>([]);
+  const [count, setCount] = useState(0);
   const { filtered } = useAppSelector((state) => state.games);
 
-  const handleOnSearch = (query: IQueryObj[]) => {
+  const handleOnSearch = (query: IQueryObj[], skip:string) => {
     const queryString = query.reduce(
       (result, item, index) =>
         index === 0
@@ -35,17 +36,17 @@ const Games: FC = () => {
       "?"
     );
     history.push(location.pathname + queryString);
-    dispatch(getFilteredGames(queryString));
+    dispatch(getFilteredGames({main: queryString, skip: skip}));
   };
 
   useEffect(() => {
-    dispatch(getFilteredGames(location.search ? location.search : "?"));
+    dispatch(getFilteredGames({main:location.search ? location.search : "?", skip:'0'}));
   }, []);
 
   useEffect(() => {
     if (filtered) {
       setGamesFiltered(
-        filtered.map((game) => {
+        filtered.games.map((game) => {
           return {
             name: game.name,
             id: game.id,
@@ -59,12 +60,14 @@ const Games: FC = () => {
           };
         })
       );
+
+      setCount(filtered.count);
     }
   }, [filtered]);
 
   return (
     <div>
-      <SearchInputs onSearch={handleOnSearch} />
+      <SearchInputs onSearch={handleOnSearch} count={count} />
       <GamesList games={gamesFiltered} />
     </div>
   );

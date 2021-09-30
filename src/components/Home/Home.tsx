@@ -5,7 +5,7 @@ import { getMostLikesGames } from "../../app/games";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Games from "./Games";
 import Posts from "./Posts";
-import styles from './Home.module.scss';
+import styles from "./Home.module.scss";
 
 export interface IGameHome {
   name: string;
@@ -79,10 +79,15 @@ const Home = () => {
     }
   }, [postsForHome]);
 
+
   return (
     <div className={styles.container}>
-      <div>{gamesHome && <Games className={styles.games} games={gamesHome} />}</div>
-      <div>{postsHome && <Posts className={styles.posts} forumPosts={postsHome} />}</div>
+      <div>
+        {gamesHome && <Games className={styles.games} games={gamesHome} />}
+      </div>
+      <div>
+        {postsHome && <Posts className={styles.posts} forumPosts={postsHome} />}
+      </div>
     </div>
   );
 };

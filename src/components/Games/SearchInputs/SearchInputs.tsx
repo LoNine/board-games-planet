@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button, Pagination, TextField } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { ChangeEvent, FC } from "react-router/node_modules/@types/react";
 import SelectYears from "./SelectYears";
@@ -6,10 +6,12 @@ import { debounce } from "lodash";
 import OrderBy from "./OrderBy";
 import PlayersCount from "./PlayersCount";
 import PlayTime from "./PlayTime/PlayTime";
-import styles from './SearchInputs.module.scss'
+import styles from "./SearchInputs.module.scss";
+import ButtonsLair from "./ButtonsLair";
 
 interface ISearchInputProps {
-  onSearch: (query: IQueryObj[]) => void;
+  onSearch: (query: IQueryObj[], skip: string) => void;
+  count:number
 }
 
 export interface IQueryObj {
@@ -17,9 +19,10 @@ export interface IQueryObj {
   value: string;
 }
 
-const SearchInputs: FC<ISearchInputProps> = ({ onSearch }) => {
+const SearchInputs: FC<ISearchInputProps> = ({ onSearch, count }) => {
   const [query, setQuery] = useState<IQueryObj[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [page, setPage] = useState(1);
 
   const handleOnSetQuery = (newQuery: IQueryObj) => {
     if (newQuery.value === "any") {
@@ -28,9 +31,7 @@ const SearchInputs: FC<ISearchInputProps> = ({ onSearch }) => {
       );
     } else {
       setQuery((prevState) => {
-        const index = prevState.findIndex(
-          (item) => item.key === newQuery.key
-        );
+        const index = prevState.findIndex((item) => item.key === newQuery.key);
 
         if (index >= 0) {
           prevState[index].value = newQuery.value;
@@ -49,17 +50,35 @@ const SearchInputs: FC<ISearchInputProps> = ({ onSearch }) => {
     onInputDebounced.current({ key: "name", value: event.target.value });
   };
 
+  const handleOnPanaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    console.log(event)
+  }
+  
+
   useEffect(() => {
-    onSearch(query);
-  }, [query]);
+    onSearch(query, ((page - 1) * 20).toString());
+  }, [query, page]);
 
   return (
-    <div className={styles.container}>
-      <TextField onChange={handleOnChange} value={inputValue} placeholder='Game name' />
-      <SelectYears onChange={handleOnSetQuery} />
-      <OrderBy onChange={handleOnSetQuery} />
-      <PlayersCount onChange={handleOnSetQuery} />
-      <PlayTime onChange={handleOnSetQuery} />
+    <div>
+      <div className={styles.container}>
+        <TextField
+          onChange={handleOnChange}
+          value={inputValue}
+          placeholder="Game name"
+        />
+        <SelectYears onChange={handleOnSetQuery} />
+        <OrderBy onChange={handleOnSetQuery} />
+        <PlayersCount onChange={handleOnSetQuery} />
+        <PlayTime onChange={handleOnSetQuery} />
+      </div>
+      <div>
+        {query.length > 0 && (
+          <ButtonsLair onClick={handleOnSetQuery} query={query} />
+        )}
+      </div>
+      <Pagination count={Math.ceil(count/20)} page={page} onChange={handleOnPanaginationChange} />
     </div>
   );
 };
